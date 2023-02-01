@@ -1,0 +1,27 @@
+
+spring:
+    datasource:
+        url: "jdbc:postgresql://localhost:5432/hh_clone_db?currentSchema=opa"
+        username: "postgres"
+        password: "azinox21"
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        generate-ddl: true
+        show-sql: true
+        hibernate:
+            ddl-auto: validate
+    flyway:
+        baseline-on-migrate: true
+        user: postgres
+        password: azinox21
+        url: jdbc:postgresql://localhost:5432/hh_clone_db?currentSchema=opa
+        schemas: opa
+
+jwt:
+    jwtSecret: some-temp-secret-key-value$!
+    jwtExpirationMs: 922337203685477580
+
+server:
+    port: 8080
+
+
