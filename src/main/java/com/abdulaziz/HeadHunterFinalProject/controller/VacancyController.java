@@ -30,45 +30,41 @@ public class VacancyController {
         this.mapper = mapper;
         this.vacancyService = vacancyService;
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public List<VacancyDTO> getVacancies(){
         return vacancyService.findAll().stream().map(this::convertToVacancyDTO).collect(Collectors.toList());
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+
+
     @GetMapping("/{id}")
     public Optional<VacancyDTO> getVacancyById(@PathVariable("id") long id){
         return Optional.ofNullable(convertToVacancyDTO(vacancyService.getById(id).get()));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @GetMapping("/search")
     public Page<VacancyDTO> findByParams(Pageable pageRequest, @RequestBody SearchDTO dto){
         return vacancyService.getVacanciesByParams(pageRequest,dto);
     }
 
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @PostMapping
     public ResponseEntity<HttpStatus> create(@RequestBody VacancyDTO vacancyDTO){
         vacancyService.save(convertToVacancy(vacancyDTO));
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> update(@RequestBody VacancyDTO vacancyDTO, @PathVariable long id){
         vacancyService.update(id,convertToVacancy(vacancyDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
+
     @PostMapping("/verification/{id}")
     public ResponseEntity<HttpStatus> verifyResume(@PathVariable("id") long id){
         vacancyService.getById(id).get().setVerify(true);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/verification")
     public List<VacancyEntity> getUnverifiedVacancy(){
         return vacancyService.getUnverifiedResume();
@@ -81,14 +77,9 @@ public class VacancyController {
         return mapper.map(vacancyEntity, VacancyDTO.class);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id){
         vacancyService.delete(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
-
-
-
 }

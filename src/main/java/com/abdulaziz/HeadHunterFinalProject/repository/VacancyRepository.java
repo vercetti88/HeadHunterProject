@@ -15,16 +15,16 @@ import java.util.List;
 public interface VacancyRepository extends JpaRepository<VacancyEntity, Long> {
     List<VacancyEntity> findByIsVerifyIsFalse();
 
-    @Query(value = "SELECT * FROM crud.vacancy vc WHERE " +
+    @Query(value = "SELECT * FROM opa.vacancy vc WHERE " +
             "(:location is null or lower(vc.location) like lower(concat('%',:location,'%')))" +
-            "and (:title is null or lower(vc.title) like lower(concat('%',:title,'%')))" +
-            "and (:experience is null or vc.experience = :experience)" +
-            "and (:person_id is null or vc.person_id = :person_id)",
+            "and (:job_title is null or lower(vc.job_title) like lower(concat('%',:job_title,'%')))" +
+//            "and (:status is null or vc.status = :status)" +
+            "and (:user_id is null or vc.user_id = :user_id)",
             nativeQuery = true)
     Page<VacancyEntity> findByParams(
             @Param("location") String location,
-            @Param("title") String title,
-            @Param("experience") String experience,
-            @Param("person_id") Long personId,
+            @Param("job_title") String jobTitle,
+//            @Param("status") String status,
+            @Param("user_id") Long personId,
             Pageable pageRequest);
 }

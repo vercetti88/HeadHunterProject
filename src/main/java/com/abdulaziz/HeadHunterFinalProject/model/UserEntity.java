@@ -1,4 +1,5 @@
 package com.abdulaziz.HeadHunterFinalProject.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,9 +38,9 @@ public class UserEntity {
     @Column(name = "is_active")
     private boolean isActive = true;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private RoleEntity role = new RoleEntity(RoleType.CLIENT);
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "role")
+    private RoleEntity role;
 
 
     @OneToMany(cascade = CascadeType.DETACH,mappedBy = "user")

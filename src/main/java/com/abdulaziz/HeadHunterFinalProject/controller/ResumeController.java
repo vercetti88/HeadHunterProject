@@ -2,6 +2,7 @@ package com.abdulaziz.HeadHunterFinalProject.controller;
 
 
 import com.abdulaziz.HeadHunterFinalProject.dto.ResumeDTO;
+import com.abdulaziz.HeadHunterFinalProject.dto.SearchDTO;
 import com.abdulaziz.HeadHunterFinalProject.message.ResponseMessage;
 import com.abdulaziz.HeadHunterFinalProject.model.ResumeEntity;
 import com.abdulaziz.HeadHunterFinalProject.model.VacancyEntity;
@@ -10,6 +11,8 @@ import com.abdulaziz.HeadHunterFinalProject.service.FileStorageService;
 import com.abdulaziz.HeadHunterFinalProject.service.ResumeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +40,7 @@ public class ResumeController {
         this.fileService = fileService;
         this.storageService = storageService;
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_USER')")
+
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>>  getResumeWithFiles(@PathVariable("id") long id){
         Map<String, Object> map = new HashMap<>();
@@ -52,26 +55,30 @@ public class ResumeController {
 //        return Optional.ofNullable(convertToResumeDTO(resumeService.getById(id).get()));
 //    }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @GetMapping("/verification")
     public List<ResumeEntity> getUnverifiedVacancy(){
         return resumeService.getUnverifiedResume();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @PostMapping("/verification/{id}")
     public ResponseEntity<HttpStatus> verifyResume(@PathVariable("id") long id){
         resumeService.getById(id).get().setIsVerify(true);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    @GetMapping("/search")
+    public ResponseEntity<Page<ResumeEntity>> search(@RequestBody SearchDTO searchDTO, Pageable pageable){
+        return new ResponseEntity<>(resumeService.getResumesByParams(pageable,searchDTO), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<HttpStatus> create(@RequestBody ResumeDTO resumeDTO){
         resumeService.save(resumeDTO);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+
     @PostMapping(value = "/files",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE} )
@@ -88,10 +95,6 @@ public class ResumeController {
         }
     }
 
-
-
-
-
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> update(@RequestBody ResumeDTO resumeDTO, @PathVariable long id){
         resumeService.update(id,convertToResume(resumeDTO));
@@ -104,13 +107,11 @@ public class ResumeController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-
     public ResumeEntity convertToResume(ResumeDTO resumeDTO){
         return mapper.map(resumeDTO, ResumeEntity.class);
     }
     public ResumeDTO convertToResumeDTO(ResumeEntity resumeEntity){
         return mapper.map(resumeEntity, ResumeDTO.class);
     }
-
 
 }

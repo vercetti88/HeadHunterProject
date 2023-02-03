@@ -1,9 +1,9 @@
 create table opa.files (id bigserial not null, file_name varchar(255), full_file_name varchar(255), resume_id bigint, primary key (id));
-create table opa.resume (id bigserial not null, about_me varchar(255), age integer, birth_day varchar(255), create_date timestamp(6), education varchar(255), email varchar(255), gender varchar(255), married boolean, is_verify boolean, languages varchar(255), location varchar(255), name varchar(255), patronymic varchar(255), phone varchar(255), position varchar(255), salary integer, skills varchar(255), status varchar(255), surname varchar(255), work_place varchar(255), user_id bigint, primary key (id));
-create table opa.roles (id varchar(255) not null, primary key (id));
-create table opa.users (id bigserial not null, create_date timestamp(6), email varchar(255), is_active boolean, name varchar(255), password varchar(255), surname varchar(255), role_id varchar(255), primary key (id));
-create table opa.vacancy (id bigserial not null, about_company varchar(255), about_vacancy varchar(255), create_date timestamp(6), experience varchar(255), is_verify boolean not null, job_title varchar(255), location varchar(255), requirements varchar(255), salary integer, status varchar(255), work_type varchar(255), user_id bigint, primary key (id));
-alter table if exists opa.files add constraint FK6hfnl9o1om0brjkp9r8rck27y foreign key (resume_id) references opa.resume;
-alter table if exists opa.resume add constraint FKpv0whudowxosfu792veo6s2c0 foreign key (user_id) references opa.users;
-alter table if exists opa.users add constraint FKp56c1712k691lhsyewcssf40f foreign key (role_id) references opa.roles;
-alter table if exists opa.vacancy add constraint FK8r2xu5td20shvcby0tct7upj4 foreign key (user_id) references opa.users;
+ create table opa.resume (id bigserial not null, about_me varchar(255), age integer, birth_day varchar(255), create_date timestamp(6), education varchar(255), email varchar(255), gender varchar(255), married boolean, is_verify boolean, languages varchar(255), location varchar(255), name varchar(255), patronymic varchar(255), phone varchar(255), position varchar(255), salary integer, skills varchar(255), surname varchar(255), work_place varchar(255), user_id bigint, primary key (id));
+ create table opa.roles (role varchar(255) not null, primary key (role));
+ create table opa.users (id bigserial not null, create_date timestamp(6), email varchar(255), is_active boolean, name varchar(255), password varchar(255), surname varchar(255), role varchar(255), primary key (id));
+ create table opa.vacancy (id bigserial not null, about_company varchar(255), about_vacancy varchar(255), create_date timestamp(6), experience varchar(255), is_verify boolean, job_title varchar(255), location varchar(255), requirements varchar(255), salary integer, work_type varchar(255), user_id bigint, primary key (id));
+ alter table if exists opa.files add constraint FK6hfnl9o1om0brjkp9r8rck27y foreign key (resume_id) references opa.resume;
+ alter table if exists opa.resume add constraint FKpv0whudowxosfu792veo6s2c0 foreign key (user_id) references opa.users;
+ alter table if exists opa.users add constraint FK4c6vlshk8x83ifeoggi3exg3k foreign key (role) references opa.roles;
+ alter table if exists opa.vacancy add constraint FK8r2xu5td20shvcby0tct7upj4 foreign key (user_id) references opa.users;

@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class VacancyService {
 
 
     public Page<VacancyDTO> getVacanciesByParams(Pageable pageRequest, SearchDTO dto) {
-        Page<VacancyEntity> list = vacancyRepository.findByParams(dto.getLocation(), dto.getTitle(), dto.getExperience(), dto.getUserId(), pageRequest);
+        Page<VacancyEntity> list = vacancyRepository.findByParams(dto.getLocation(), dto.getTitle(), dto.getUserId(), pageRequest);
         return list.map(v -> mapper.map(v, VacancyDTO.class));
     }
 
@@ -45,11 +46,11 @@ public class VacancyService {
         return vacancyRepository.findByIsVerifyIsFalse();
     }
 
+
+
     @Transactional
     public void save(VacancyEntity vacancyEntity){
-
         vacancyRepository.save(vacancyEntity);
-
     }
 
     @Transactional
@@ -57,7 +58,6 @@ public class VacancyService {
         vacancyEntity.setId(id);
         vacancyRepository.save(vacancyEntity);
     }
-
 
 
     @Transactional

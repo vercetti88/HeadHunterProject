@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class UserSearchDTO {
     private String searchField;
+    private Boolean isActive;
 }

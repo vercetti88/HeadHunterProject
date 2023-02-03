@@ -4,15 +4,21 @@ package com.abdulaziz.HeadHunterFinalProject.service;
 import com.abdulaziz.HeadHunterFinalProject.dto.JwtTokenDto;
 import com.abdulaziz.HeadHunterFinalProject.dto.LoginDto;
 import com.abdulaziz.HeadHunterFinalProject.dto.UserDTO;
+import com.abdulaziz.HeadHunterFinalProject.dto.UserSearchDTO;
 import com.abdulaziz.HeadHunterFinalProject.model.RoleEntity;
 import com.abdulaziz.HeadHunterFinalProject.model.RoleType;
 import com.abdulaziz.HeadHunterFinalProject.model.UserEntity;
 import com.abdulaziz.HeadHunterFinalProject.repository.UserRepository;
 import com.abdulaziz.HeadHunterFinalProject.security.JwtUtils;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +42,8 @@ public class UserService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder encoder;
+
+
 
 
     public List<UserEntity> findAll(){
@@ -67,6 +76,7 @@ public class UserService implements UserDetailsService {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.encoder = encoder;
+
     }
 
     public JwtTokenDto login(LoginDto authRequest) {
@@ -81,15 +91,21 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
+    @Transactional
     public void registration(UserDTO dto) {
+
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Error: Email is already in use!");
         }
         UserEntity user = mapper.map(dto, UserEntity.class);
         user.setPassword(encoder.encode(dto.getPassword()));
-        user.setRole(new RoleEntity(RoleType.CLIENT));
-
+        user.setRole(new RoleEntity(RoleType.ROLE_CLIENT));
         userRepository.save(user);
+    }
+
+    public Page<UserDTO> getByParams(Pageable pagerequest, UserSearchDTO searchDTO){
+        Page<UserEntity> list = userRepository.findByParams(searchDTO.getSearchField(),searchDTO.getIsActive(),pagerequest);
+        return list.map(v->mapper.map(v,UserDTO.class));
     }
 
 

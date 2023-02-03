@@ -65,7 +65,6 @@ public class ResumeEntity {
     @Column(name = "languages")
     private String languages;
     @Column(name = "create_date")
-    private Date creationDate;
-    @Column(name = "status")
-    private String status;
+    private Date creationDate = new Date();
+
 }

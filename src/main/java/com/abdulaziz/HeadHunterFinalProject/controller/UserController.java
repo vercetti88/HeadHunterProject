@@ -4,10 +4,14 @@ package com.abdulaziz.HeadHunterFinalProject.controller;
 import com.abdulaziz.HeadHunterFinalProject.dto.JwtTokenDto;
 import com.abdulaziz.HeadHunterFinalProject.dto.LoginDto;
 import com.abdulaziz.HeadHunterFinalProject.dto.UserDTO;
+import com.abdulaziz.HeadHunterFinalProject.dto.UserSearchDTO;
 import com.abdulaziz.HeadHunterFinalProject.model.UserEntity;
+import com.abdulaziz.HeadHunterFinalProject.repository.UserRepository;
 import com.abdulaziz.HeadHunterFinalProject.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +43,6 @@ public class UserController {
                 .map(this::convertToUserDTO).collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/activate/{id}")
     public ResponseEntity<HttpStatus> activateUser(@PathVariable("id") long id){
         UserEntity user = userService.getById(id).get();
@@ -48,7 +51,6 @@ public class UserController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/block/{id}")
     public ResponseEntity<HttpStatus> blockUser(@PathVariable("id") long id){
         UserEntity user = userService.getById(id).get();
@@ -56,8 +58,6 @@ public class UserController {
             user.setActive(false);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @GetMapping("/{id}")
     public Optional<UserDTO> getUserById(@PathVariable("id") long id){
         return Optional.ofNullable(convertToUserDTO(userService.getById(id).get()));
@@ -71,21 +71,18 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    @PostMapping
-    public ResponseEntity<HttpStatus> create(@RequestBody UserDTO userDTO){
-        userService.save(convertToUser(userDTO));
-        return ResponseEntity.ok(HttpStatus.CREATED);
-    }
+//    @PostMapping
+//    public ResponseEntity<HttpStatus> create(@RequestBody UserDTO userDTO){
+//        userService.save(convertToUser(userDTO));
+//        return ResponseEntity.ok(HttpStatus.CREATED);
+//    }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> update(@RequestBody UserDTO userDTO, @PathVariable long id){
         userService.update(id,convertToUser(userDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") long id){
         userService.delete(id);
@@ -101,11 +98,17 @@ public class UserController {
         userService.registration(userDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+
     @GetMapping("/showUserInfo")
     public ResponseEntity<String> showUserInfo(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDTO userDTO = (UserDTO) authentication.getPrincipal();
+        System.out.println(userDTO);
         return ResponseEntity.ok(userDTO.getUsername());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<UserDTO>> searchByParams(Pageable pagerequest, @RequestBody UserSearchDTO searchDTO){
+        return new ResponseEntity<>(userService.getByParams(pagerequest,searchDTO), HttpStatus.OK);
     }
 }

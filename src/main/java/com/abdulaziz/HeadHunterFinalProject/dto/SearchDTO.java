@@ -11,6 +11,7 @@ public class SearchDTO {
     private String title;
     private String location;
     private String experience;
-
+    private String status;
+    private String position;
 
 }

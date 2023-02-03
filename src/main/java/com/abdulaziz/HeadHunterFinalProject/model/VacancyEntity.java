@@ -24,6 +24,7 @@ public class VacancyEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(name = "is_verify")
     private boolean isVerify = false;
 
     @Column(name = "job_title")
@@ -43,9 +44,7 @@ public class VacancyEntity {
     @Column(name = "about_vacancy")
     private String aboutVacancy;
     @Column(name = "create_date")
-    private Date createDate;
-    @Column(name = "status")
-    private String status;
+    private Date createDate = new Date();
 
 
 }

@@ -31,6 +31,8 @@ public class UserDTO implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        roles = new HashSet<>();
+        roles.add(new RoleEntity(RoleType.ROLE_CLIENT));
         return roles;
     }
 

@@ -2,5 +2,5 @@ package com.abdulaziz.HeadHunterFinalProject.model;
 
 
 public enum RoleType {
-    ADMIN, CLIENT
+    ROLE_ADMIN, ROLE_CLIENT
 }

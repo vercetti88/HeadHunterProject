@@ -19,7 +19,6 @@ public class FileController {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("id") long id){
         Resource resource = fileStorageService.getFile(id);
@@ -28,7 +27,6 @@ public class FileController {
                 .body(resource);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_USER')")
     @DeleteMapping("/{id}")
     public void deleteFile(@PathVariable("id") long id){
         fileStorageService.delete(id);

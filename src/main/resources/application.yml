@@ -1,7 +1,7 @@
 
 spring:
     datasource:
-        url: "jdbc:postgresql://localhost:5432/hh_clone_db?currentSchema=opa"
+        url: "jdbc:postgresql://localhost:5432/postgres?currentSchema=opa"
         username: "postgres"
         password: "azinox21"
         driver-class-name: org.postgresql.Driver
